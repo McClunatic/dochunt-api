@@ -16,8 +16,7 @@ router.get("/", function(req, res, next) {
              rows.forEach(row => {
                debug("row:", row);
              });
-             // res.send(rows);
-             res.render('index', { title: 'Hunt' });
+             res.send(rows);
            }
          });
 });
