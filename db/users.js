@@ -50,7 +50,7 @@ class Db {
 
   insert(user, callback) {
     return this.db.run(
-      "insert into users (name, email, password) values (?, ?, ?)",
+      "insert into users (username, email, password) values (?, ?, ?)",
       user,
       function(err) {
         callback(err);
