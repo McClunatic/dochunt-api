@@ -22,6 +22,16 @@ class Db {
     );
   }
 
+  selectByEmail(email, callback) {
+    return this.db.get(
+      "select * from users where email = ?",
+      [email],
+      function(err, row) {
+        callback(err, row);
+      }
+    );
+  }
+
   selectByUsername(username, callback) {
     return this.db.get(
       "select * from users where username = ?",
