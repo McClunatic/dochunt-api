@@ -9,7 +9,7 @@ var logger = require('morgan');
 
 // define and configure strategy for passport
 var db = require('./db');
-var userDb = db.users.Db("/home/ec2-user/environment/dochunt-api/users.db");
+var userDb = new db.UserDb("/home/ec2-user/environment/dochunt-api/users.db");
 var Strategy = require('passport-local').Strategy;
 
 passport.use(new Strategy(
@@ -58,8 +58,8 @@ app.use(passport.session());
 
 // define routes
 var indexRouter = require('./routes/index');
-var loginRouter = require('/.routes/login');
-var registerRouter = require('/.routes/register');
+var loginRouter = require('./routes/login');
+var registerRouter = require('./routes/register');
 var huntRouter = require('./routes/hunt');
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
