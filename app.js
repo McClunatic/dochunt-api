@@ -1,13 +1,42 @@
 var createError = require('http-errors');
 var express = require('express');
+var passport = require('passport');
+var bcrypt = require('bcrypt');
 var cors = require('cors');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var huntRouter = require('./routes/hunt');
+// define and configure strategy for passport
+var db = require('./db');
+var userDb = db.users.Db("/home/ec2-user/environment/dochunt-api/users.db");
+var Strategy = require('passport-local').Strategy;
 
+passport.use(new Strategy(
+  function(username, password, cb) {
+    userDb.selectByUsername(username, function(err, user) {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      if (!bcrypt.compareSync(password, user.password)) {
+        return cb(null, false);
+      }
+      return cb(null, user);
+    });
+  }));
+
+// configure passport authenticated session persistence
+passport.serializeUser(function(user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+  userDb.selectById(id, function(err, user) {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
+});
+
+// create the express application
 var app = express();
 app.use(cors());
 
@@ -15,13 +44,24 @@ app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
+// define routes
+var indexRouter = require('./routes/index');
+var loginRouter = require('/.routes/login');
+var huntRouter = require('./routes/hunt');
 app.use('/', indexRouter);
+app.use('/login', loginRouter);
 app.use('/hunt', huntRouter);
 
 // catch 404 and forward to error handler
