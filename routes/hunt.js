@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var debug = require('debug')('dochunt-api:router:hunt');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('the-ringer.db', sqlite3.OPEN_READONLY);
+var db = new sqlite3.Database('/home/ec2-user/environment/the-ringer.db',
+                              sqlite3.OPEN_READONLY);
 
 /* GET hunt results. */
 router.get("/", function(req, res, next) {
