@@ -9,7 +9,7 @@ var logger = require('morgan');
 
 // define and configure strategy for passport
 var db = require('./db');
-var userDb = new db.UserDb("/home/ec2-user/environment/dochunt-api/users.db");
+var userDb = new db.UserDb("C:\\Users\\brian\\Workspace\\dochunt-api\\users.db");
 var Strategy = require('passport-local').Strategy;
 
 passport.use(new Strategy(

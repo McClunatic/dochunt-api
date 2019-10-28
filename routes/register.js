@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 const debug = require("debug")("dochunt-api:router:register");
 const db = require("../db")
-const userDb = new db.UserDb("/home/ec2-user/environment/dochunt-api/users.db");
+const userDb = new db.UserDb("C:\\Users\\brian\\Workspace\\dochunt-api\\users.db");
 
 /* POST user login */
 router.post("/", function(req, res) {
