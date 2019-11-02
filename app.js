@@ -1,3 +1,4 @@
+var config = require("./config");
 var createError = require('http-errors');
 var express = require('express');
 var passport = require('passport');
@@ -6,10 +7,12 @@ var cors = require('cors');
 var path = require('path');
 var logger = require('morgan');
 
-// define and configure strategy for passport
+// define and configure strategies for passport
 var db = require('./db');
 var userDb = new db.UserDb("C:\\Users\\brian\\Workspace\\dochunt-api\\users.db");
 var Strategy = require('passport-local').Strategy;
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
 
 passport.use(new Strategy(
   function(username, password, cb) {
@@ -21,7 +24,21 @@ passport.use(new Strategy(
       }
       return cb(null, user);
     });
-  }));
+  }
+ ));
+
+passport.use(new JwtStrategy(
+  {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: config.secret
+  }, function(jwt_payload, cb) {
+    userDb.selectById(jwt_payload.id, function(err, user) {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }
+ ));
 
 // create the express application
 var app = express();

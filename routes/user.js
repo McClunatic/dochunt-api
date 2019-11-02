@@ -5,12 +5,15 @@ const debug = require("debug")("dochunt-api:router:user");
 
 
 /* GET user info */
-router.get("/", passport.authenticate("jwt"), function(req, res) {
-  return res.send({
-    id: req.user.id,
-    username: req.user.username,
-    email: req.user.email
-  });
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function(req, res) {
+    return res.send({
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email
+    });
 });
 
 module.exports = router;
