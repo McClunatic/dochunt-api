@@ -3,23 +3,21 @@ const passport = require("passport");
 const router = express.Router();
 const debug = require("debug")("dochunt-api:router:login");
 
-
 /* POST user login */
-router.post("/", function(req, res, next) {
-  passport.authenticate("local", function(err, user, info, status) {
-    if (err) { return next(err); }
-    if (!user) { return res.status(status).send([user, info]); }
-    req.login(user, function(err) {
-      if (err) { return next(err); }
-      debug(`Logging in user ${user.username}`);
-      return res.send({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        message: `Logged in with user id ${user.id}`
-      });
-    });
-  })(req, res, next);
-});
+router.post(
+  "/",
+  passport.authenticate('basic'),
+  { session: false },
+  function(req, res) {
+    let response = {
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+      message: `Logged in with user id ${req.user.id}`
+    }
+    debug(`response: ${response}`);
+    res.send(response);
+  }
+ );
 
 module.exports = router;

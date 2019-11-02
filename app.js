@@ -4,13 +4,12 @@ var passport = require('passport');
 var bcrypt = require('bcrypt');
 var cors = require('cors');
 var path = require('path');
-var session = require('express-session');
 var logger = require('morgan');
 
 // define and configure strategy for passport
 var db = require('./db');
 var userDb = new db.UserDb("C:\\Users\\brian\\Workspace\\dochunt-api\\users.db");
-var Strategy = require('passport-local').Strategy;
+var Strategy = require('passport-http').BasicStrategy;
 
 passport.use(new Strategy(
   function(username, password, cb) {
@@ -23,18 +22,6 @@ passport.use(new Strategy(
       return cb(null, user);
     });
   }));
-
-// configure passport authenticated session persistence
-passport.serializeUser(function(user, cb) {
-  cb(null, user.id);
-});
-
-passport.deserializeUser(function(id, cb) {
-  userDb.selectById(id, function(err, user) {
-    if (err) { return cb(err); }
-    cb(null, user);
-  });
-});
 
 // create the express application
 var app = express();
