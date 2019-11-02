@@ -21,7 +21,9 @@ router.post("/", function(req, res) {
           if (err) { return res.status(500).send("Unable to log user in"); }
           debug(`Logging in new user ${user.username}`);
           return res.send({
-            user: user.username,
+            id: user.id,
+            username: user.username,
+            email: user.email,
             message: `Registered user logged in with user id ${user.id}`
           });
         });

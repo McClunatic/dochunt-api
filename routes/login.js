@@ -13,7 +13,9 @@ router.post("/", function(req, res, next) {
       if (err) { return next(err); }
       debug(`Logging in user ${user.username}`);
       return res.send({
-        user: user.username,
+        id: user.id,
+        username: user.username,
+        email: user.email,
         message: `Logged in with user id ${user.id}`
       });
     });

@@ -8,7 +8,7 @@ const debug = require("debug")("dochunt-api:router:user");
 router.get("/", passport.authenticate("local"), function(req, res) {
   return res.send({
     id: req.user.id,
-    user: req.user.username,
+    username: req.user.username,
     email: req.user.email
   });
 });
