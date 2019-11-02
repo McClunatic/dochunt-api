@@ -6,8 +6,7 @@ const debug = require("debug")("dochunt-api:router:login");
 /* POST user login */
 router.post(
   "/",
-  passport.authenticate('basic'),
-  { session: false },
+  passport.authenticate('local', { session: false }),
   function(req, res) {
     let response = {
       id: req.user.id,

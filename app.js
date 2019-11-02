@@ -9,7 +9,7 @@ var logger = require('morgan');
 // define and configure strategy for passport
 var db = require('./db');
 var userDb = new db.UserDb("C:\\Users\\brian\\Workspace\\dochunt-api\\users.db");
-var Strategy = require('passport-http').BasicStrategy;
+var Strategy = require('passport-local').Strategy;
 
 passport.use(new Strategy(
   function(username, password, cb) {
@@ -35,13 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false
-}));
 app.use(passport.initialize());
-app.use(passport.session());
 
 // define routes
 var indexRouter = require('./routes/index');
