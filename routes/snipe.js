@@ -46,7 +46,7 @@ router.get(
               var check = setInterval(() => {
                 if (records.length === response.data.length) {
                   clearInterval(check);
-                  res.send(records);
+                  res.send(records.sort((a, b) => b.similarity - a.similarity));
                 }
               });
             })
