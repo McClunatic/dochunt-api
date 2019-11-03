@@ -60,11 +60,13 @@ var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var userRouter = require('./routes/user');
 var huntRouter = require('./routes/hunt');
+var snipeRouter = require('./routes/snipe');
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/user', userRouter);
 app.use('/hunt', huntRouter);
+app.use('/snipe', snipeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

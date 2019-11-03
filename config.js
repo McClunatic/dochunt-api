@@ -1,3 +1,4 @@
 module.exports = {
-  secret: "dot torte"
+  secret: "dot torte",
+  lda_api: "http://localhost:8082"
 }
