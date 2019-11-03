@@ -23,12 +23,16 @@ router.get(
         if (err) {
           next(err);
         } else {
-          let query = { target: row.index };
+          let query = {
+            target: row.index,
+            num_best: req.query.num_best
+          };
           axios
             .get(`${config.lda_api}/snipe`, { params: query })
             .then(response => {
               var records = [];
               response.data.forEach(entry => {
+                debug("handling results from LDA API");
                 db.get(
                   'select "id", "href", title, author, date ' +
                   'from articles where "index" = ?',
