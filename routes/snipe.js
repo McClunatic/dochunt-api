@@ -30,29 +30,25 @@ router.get(
           axios
             .get(`${config.lda_api}/snipe`, { params: query })
             .then(response => {
-              var records = [];
-              response.data.forEach(entry => {
-                debug("handling results from LDA API");
-                db.get(
-                  'select "id", "href", title, author, date ' +
-                  'from articles where "index" = ?',
-                  [entry.index],
-                  (err, rec) => {
-                    if (err) {
-                      next(err);
-                    } else {
-                      records.push({ similarity: entry.similarity, ...rec });
-                    }
+              debug("handling results from LDA API");
+              let requery = `select "id", "href", title, author, date, "index"
+                  from articles where "index" in
+                  (?${",?".repeat(response.data.length - 1)})`;
+              db.all(
+                requery,
+                response.data.map(entry => entry.index),
+                (err, recs) => {
+                  if (err) {
+                    next(err);
+                  } else {
+                    res.send(response.data.map(entry => {
+                      return {
+                        ...entry,
+                        ...recs.find(r => r.index === entry.index)
+                      };
+                    }));
                   }
-                );
-              });
-              // refactor to use promise-based sqlite library
-              var check = setInterval(() => {
-                if (records.length === response.data.length) {
-                  clearInterval(check);
-                  res.send(records.sort((a, b) => b.similarity - a.similarity));
-                }
-              });
+                });
             })
             .catch(err => {
               next(err);
