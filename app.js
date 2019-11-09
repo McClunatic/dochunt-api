@@ -59,12 +59,14 @@ var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var userRouter = require('./routes/user');
+var fieldsRouter = require('./routes/fields');
 var huntRouter = require('./routes/hunt');
 var snipeRouter = require('./routes/snipe');
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/user', userRouter);
+app.use('/fields', fieldsRouter);
 app.use('/hunt', huntRouter);
 app.use('/snipe', snipeRouter);
 
