@@ -7,7 +7,7 @@ const querystring = require("querystring");
 var debug = require('debug')('dochunt-api:router:snipe');
 var sqlite3 = require('sqlite3').verbose();
 var path = require('path');
-var dbpath = path.normalize('C:\\Users\\brian\\Workspace\\the-ringer-files\\the-ringer.db');
+var dbpath = path.normalize(config.dbpath);
 var db = new sqlite3.Database(dbpath, sqlite3.OPEN_READONLY);
 
 /* GET snipe results. */
@@ -31,9 +31,13 @@ router.get(
             .get(`${config.lda_api}/snipe`, { params: query })
             .then(response => {
               debug("handling results from LDA API");
-              let requery = `select "id", "href", title, author, date, "index"
-                  from articles where "index" in
-                  (?${",?".repeat(response.data.length - 1)})`;
+              let columns = config.columns
+                .filter(col => col !== "content")
+              let requery = `
+                select ${columns.map(str => `"${str}"`).join(', ')}
+                from articles where "index" in
+                (?${",?".repeat(response.data.length - 1)})`;
+              debug("requery:", requery);
               db.all(
                 requery,
                 response.data.map(entry => entry.index),
@@ -41,12 +45,16 @@ router.get(
                   if (err) {
                     next(err);
                   } else {
-                    res.send(response.data.map(entry => {
+                    let reply = response.data.map(entry => {
                       return {
                         ...entry,
                         ...recs.find(r => r.index === entry.index)
                       };
-                    }));
+                    });
+                    reply.forEach(row => {
+                      debug("row:", row);
+                    });
+                    res.send(reply);
                   }
                 });
             })
