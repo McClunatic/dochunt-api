@@ -59,6 +59,7 @@ var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var userRouter = require('./routes/user');
+var profileRouter = require('./routes/profile');
 var fieldsRouter = require('./routes/fields');
 var huntRouter = require('./routes/hunt');
 var snipeRouter = require('./routes/snipe');
@@ -66,13 +67,13 @@ app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/user', userRouter);
+app.use('/profile', profileRouter);
 app.use('/fields', fieldsRouter);
 app.use('/hunt', huntRouter);
 app.use('/snipe', snipeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log("req:", req);
   next(createError(404));
 });
 
