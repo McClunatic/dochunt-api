@@ -22,7 +22,7 @@ module.exports = {
       tagKey: "image",
       label: "Number",
       sortable: true,
-      thStyle: "width: 1%; white-space: nowrap"
+      thStyle: "width: 12%"
     },
     {
       col: 1,
@@ -30,17 +30,24 @@ module.exports = {
       key: "title",
       label: "Title",
       sortable: true,
-      thStyle: "width: 100%"
+      thStyle: "width: 50%"
     },
     {
       col: 2,
-      key: "author",
-      label: "Author",
+      key: "category",
+      label: "Category",
       sortable: true,
-      thStyle: "width: 1%; white-space: nowrap"
+      thStyle: "width: 15%"
     },
     {
       col: 3,
+      key: "author",
+      label: "Author",
+      sortable: true,
+      thStyle: "width: 11%"
+    },
+    {
+      col: 4,
       key: "date",
       label: "Date",
       sortable: true,
