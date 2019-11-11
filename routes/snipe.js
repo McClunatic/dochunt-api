@@ -23,44 +23,48 @@ router.get(
         if (err) {
           next(err);
         } else {
-          let query = {
-            target: row.index,
-            num_best: req.query.num_best
-          };
-          axios
-            .get(`${config.lda_api}/snipe`, { params: query })
-            .then(response => {
-              debug("handling results from LDA API");
-              let columns = config.columns
-                .filter(col => col !== "content")
-              let requery = `
-                select ${columns.map(str => `"${str}"`).join(', ')}
-                from articles where "index" in
-                (?${",?".repeat(response.data.length - 1)})`;
-              debug("requery:", requery);
-              db.all(
-                requery,
-                response.data.map(entry => entry.index),
-                (err, recs) => {
-                  if (err) {
-                    next(err);
-                  } else {
-                    let reply = response.data.map(entry => {
-                      return {
-                        ...entry,
-                        ...recs.find(r => r.index === entry.index)
-                      };
-                    });
-                    reply.forEach(row => {
-                      debug("row:", row);
-                    });
-                    res.send(reply);
-                  }
-                });
-            })
-            .catch(err => {
-              next(err);
-            });
+          if (!row) {
+            res.send([]);
+          } else {
+            let query = {
+              target: row.index,
+              num_best: req.query.num_best
+            };
+            axios
+              .get(`${config.lda_api}/snipe`, { params: query })
+              .then(response => {
+                debug("handling results from LDA API");
+                let columns = config.columns
+                  .filter(col => col !== "content")
+                let requery = `
+                  select ${columns.map(str => `"${str}"`).join(', ')}
+                  from articles where "index" in
+                  (?${",?".repeat(response.data.length - 1)})`;
+                debug("requery:", requery);
+                db.all(
+                  requery,
+                  response.data.map(entry => entry.index),
+                  (err, recs) => {
+                    if (err) {
+                      next(err);
+                    } else {
+                      let reply = response.data.map(entry => {
+                        return {
+                          ...entry,
+                          ...recs.find(r => r.index === entry.index)
+                        };
+                      });
+                      reply.forEach(row => {
+                        debug("row:", row);
+                      });
+                      res.send(reply);
+                    }
+                  });
+              })
+              .catch(err => {
+                next(err);
+              });
+          }
         }
       }
     );
