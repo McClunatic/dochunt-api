@@ -8,7 +8,6 @@ const debug = require("debug")("dochunt-api:router:fields");
 /* GET fields info */
 router.get(
   "/",
-  passport.authenticate("jwt", { session: false }),
   function(req, res) {
     debug("Sending fields");
     return res.send(config.fields);
